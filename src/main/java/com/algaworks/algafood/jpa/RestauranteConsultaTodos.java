@@ -22,7 +22,8 @@ public class RestauranteConsultaTodos {
 		
 		List<Restaurante> restaurantes = restauranteRepository.todos();
 		
-		restaurantes.forEach(restaurante -> System.out.println("nomes: " + restaurante.getNome() + " Frete: " + restaurante.getTaxaFrete()));
+		restaurantes.forEach(restaurante -> System.out.println("nomes: " + restaurante.getNome() + " Frete: " + restaurante.getTaxaFrete()
+		+ " Cozinha: " + restaurante.getCozinha().getNome()));
 	}
 
 }
