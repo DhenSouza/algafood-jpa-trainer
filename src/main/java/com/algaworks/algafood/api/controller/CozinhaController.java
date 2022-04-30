@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -63,9 +64,18 @@ public class CozinhaController {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Cozinha> deleteCoziunha(@PathVariable Long id) {
+		try {
 		Cozinha cozinha = cozinhaRepo.buscarPorId(id);
+		
+		if(cozinha == null) {
+			return ResponseEntity.notFound().build();
+		}
 		cozinhaRepo.deletar(cozinha);
 		
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+		} catch (DataIntegrityViolationException ex) {
+			
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
 	}
 }
