@@ -39,7 +39,7 @@ public class CozinhaController {
 	}
 	
 	@PostMapping
-	public void insertCozinha(@RequestBody Cozinha cozinha) {
-		 ResponseEntity.status(HttpStatus.CREATED).body(cozinhaRepo.adicionar(cozinha));
+	public ResponseEntity<Cozinha> insertCozinha(@RequestBody Cozinha cozinha) {
+		return  ResponseEntity.status(HttpStatus.CREATED).body(cozinhaRepo.adicionar(cozinha));
 	}
 }
