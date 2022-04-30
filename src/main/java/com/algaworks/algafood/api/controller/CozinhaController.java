@@ -3,6 +3,8 @@ package com.algaworks.algafood.api.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +26,7 @@ public class CozinhaController {
 	}
 	
 	@GetMapping(path = "/buscar/{id}")
-	public Cozinha buscarPorId(@PathVariable Long id) {
-		return cozinhaRepo.buscarPorId(id);
+	public ResponseEntity<Cozinha> buscarPorId(@PathVariable Long id) {
+		return ResponseEntity.ok(cozinhaRepo.buscarPorId(id));
 	}
 }
