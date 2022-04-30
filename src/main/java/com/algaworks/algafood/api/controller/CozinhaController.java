@@ -6,6 +6,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,8 +56,16 @@ public class CozinhaController {
 		Cozinha cozinhaDif = cozinhaRepo.buscarPorId(id);
 //		cozinhaDif.setNome(cozinha.getNome());
 		// Ele pega o objeto atual e copia e joga no Objeto alvo
-		BeanUtils.copyProperties(cozinha, cozinhaDif);
+		BeanUtils.copyProperties(cozinha, cozinhaDif, "id");
 		
 		return ResponseEntity.status(HttpStatus.OK).body(cozinhaRepo.adicionar(cozinhaDif));
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Cozinha> deleteCoziunha(@PathVariable Long id) {
+		Cozinha cozinha = cozinhaRepo.buscarPorId(id);
+		cozinhaRepo.deletar(cozinha);
+		
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 }
