@@ -56,12 +56,7 @@ public class CozinhaController {
 		if (cozinha == null) {
 			return ResponseEntity.notFound().build();
 		}
-		Cozinha cozinhaDif = cozinhaRepo.buscarPorId(id);
-//		cozinhaDif.setNome(cozinha.getNome());
-		// Ele pega o objeto atual e copia e joga no Objeto alvo
-		BeanUtils.copyProperties(cozinha, cozinhaDif, "id");
-		
-		return ResponseEntity.status(HttpStatus.OK).body(cozinhaRepo.adicionar(cozinhaDif));
+		return ResponseEntity.status(HttpStatus.OK).body(cozinhaService.alterarCozinha(id, cozinha));
 	}
 	
 	@DeleteMapping("/{id}")
