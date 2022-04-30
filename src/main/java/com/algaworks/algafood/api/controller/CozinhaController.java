@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,9 +38,19 @@ public class CozinhaController {
 
 		return ResponseEntity.notFound().build();
 	}
-	
+
 	@PostMapping
 	public ResponseEntity<Cozinha> insertCozinha(@RequestBody Cozinha cozinha) {
-		return  ResponseEntity.status(HttpStatus.CREATED).body(cozinhaRepo.adicionar(cozinha));
+		return ResponseEntity.status(HttpStatus.CREATED).body(cozinhaRepo.adicionar(cozinha));
+	}
+
+	@PutMapping("/{id}")
+	public ResponseEntity<Cozinha> updateCozinha(@PathVariable Long id, @RequestBody Cozinha cozinha) {
+		if (cozinha == null) {
+			return ResponseEntity.notFound().build();
+		}
+		Cozinha cozinhaDif = cozinhaRepo.buscarPorId(id);
+		cozinhaDif.setNome(cozinha.getNome());
+		return ResponseEntity.status(HttpStatus.OK).body(cozinhaRepo.adicionar(cozinhaDif));
 	}
 }
