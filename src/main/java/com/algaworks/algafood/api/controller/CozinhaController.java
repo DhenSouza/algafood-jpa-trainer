@@ -2,6 +2,7 @@ package com.algaworks.algafood.api.controller;
 
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
+
+import ch.qos.logback.core.joran.util.beans.BeanUtil;
 
 @RestController
 @RequestMapping(value = "/cozinhas")
@@ -50,7 +53,10 @@ public class CozinhaController {
 			return ResponseEntity.notFound().build();
 		}
 		Cozinha cozinhaDif = cozinhaRepo.buscarPorId(id);
-		cozinhaDif.setNome(cozinha.getNome());
+//		cozinhaDif.setNome(cozinha.getNome());
+		// Ele pega o objeto atual e copia e joga no Objeto alvo
+		BeanUtils.copyProperties(cozinha, cozinhaDif);
+		
 		return ResponseEntity.status(HttpStatus.OK).body(cozinhaRepo.adicionar(cozinhaDif));
 	}
 }
