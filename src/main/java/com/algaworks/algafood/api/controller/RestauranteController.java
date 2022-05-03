@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.algaworks.algafood.domain.model.Cozinha;
+import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
+import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 
@@ -32,22 +34,37 @@ public class RestauranteController {
 	@GetMapping("/buscar/{id}")
 	public ResponseEntity<Restaurante> buscarRestaurantePorId(@PathVariable Long id) {
 		Restaurante restaurante = service.buscarPorId(id);
-		if(restaurante != null) {
+		if (restaurante != null) {
 			return ResponseEntity.ok(restaurante);
 		}
 		return ResponseEntity.notFound().build();
 	}
-	
+
 	@PostMapping
 	public ResponseEntity<Restaurante> inserirRestaurante(@RequestBody Restaurante restaurante) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(restaurante));
 	}
-	
+
 	@PutMapping("/{id}")
 	public ResponseEntity<Restaurante> updateRestaurante(@PathVariable Long id, @RequestBody Restaurante restaurante) {
 		if (restaurante == null) {
 			return ResponseEntity.notFound().build();
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(service.alterar(id, restaurante));
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Restaurante> deleteRestaurante(@PathVariable Long id) {
+		try {
+			service.deletar(id);
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+
+		} catch (EntidadeEmUsoException ex) {
+
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		} catch (EntidadeNaoEncontradaException ex) {
+
+			return ResponseEntity.notFound().build();
+		}
 	}
 }
