@@ -15,6 +15,6 @@ public interface RestauranteRepository {
 
 	Restaurante adicionar(Restaurante restaurante);
 
-	void deletar(Restaurante restaurante);
+	void deletar(Long id);
 	
 }
