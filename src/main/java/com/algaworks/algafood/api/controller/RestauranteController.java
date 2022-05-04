@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
@@ -41,8 +42,9 @@ public class RestauranteController {
 	}
 
 	@PostMapping
+	@ResponseStatus(value = HttpStatus.CREATED)
 	public ResponseEntity<Restaurante> inserirRestaurante(@RequestBody Restaurante restaurante) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(restaurante));
+		return ResponseEntity.ok(service.salvar(restaurante));
 	}
 
 	@PutMapping("/{id}")
