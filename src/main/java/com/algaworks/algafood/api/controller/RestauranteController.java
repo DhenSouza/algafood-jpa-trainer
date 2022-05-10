@@ -42,11 +42,11 @@ public class RestauranteController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Restaurante> inserirRestaurante(@RequestBody Restaurante restaurante) {
+	public ResponseEntity<?> inserirRestaurante(@RequestBody Restaurante restaurante) {
 		try {
 			return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(restaurante));
 		} catch (EntidadeNaoEncontradaException ex) {
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.badRequest().body(ex.getMessage());
 		}
 	}
 
