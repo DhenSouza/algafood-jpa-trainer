@@ -25,9 +25,13 @@ public class EstadoController {
 		return ResponseEntity.ok(service.listar());
 	}
 
-	@GetMapping(path = "/buscar/{id}")
-	public Estado buscarPorId(@PathVariable Long id) {
-		return null;
+	@GetMapping(path = "/{id}")
+	public ResponseEntity<Estado> buscarPorId(@PathVariable Long id) {
+		Estado estado = service.buscarPorId(id);
+		if (estado == null) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(service.buscarPorId(id));
 	}
-	
+
 }
