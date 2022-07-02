@@ -19,7 +19,7 @@ public class RestauranteBusca {
 		RestauranteRepository restauranteRepository = applicationContext.getBean(RestauranteRepository.class);
 		BigDecimal big = new BigDecimal(20.54);
 
-		Restaurante restaurante = restauranteRepository.buscarPorId(1L);
+		Restaurante restaurante = restauranteRepository.findById(1L).get();
 
 		System.out.println("Restaurante: " + restaurante.getNome() + " Taxa frete: " + restaurante.getTaxaFrete());
 

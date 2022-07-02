@@ -24,7 +24,7 @@ public class RestauranteAlteracao {
 		BigDecimal big = new BigDecimal(4.87);
 		restaurante.setTaxaFrete(big);
 		
-		restauranteRepository.adicionar(restaurante);
+		restauranteRepository.save(restaurante);
 		
 
 	}

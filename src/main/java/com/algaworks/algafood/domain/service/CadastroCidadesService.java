@@ -1,6 +1,7 @@
 package com.algaworks.algafood.domain.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,36 +22,36 @@ public class CadastroCidadesService {
 	private CidadeRepository repository;
 
 	public List<Cidade> listar() {
-		return repository.listar();
+		return repository.findAll();
 	}
 
-	public Cidade buscarPorId(Long id) {
-		return repository.buscar(id);
+	public Optional<Cidade> buscarPorId(Long id) {
+		return repository.findById(id);
 	}
 
 	public Cidade salvar(Cidade cidade) {
 		Long idCidade = cidade.getId();
-		Cidade cidadeAux = repository.incluir(cidade);
+		Cidade cidadeAux = repository.save(cidade);
 
 		if (cidadeAux == null) {
 			throw new EntidadeNaoEncontradaException(
 					String.format("Não existe cadastro de estado com o codigo %d", idCidade));
 		}
 
-		return repository.incluir(cidadeAux);
+		return repository.save(cidadeAux);
 	}
 	
 	public Cidade alterar(Cidade cidade, Long id) {
-		Cidade cidadeAux = buscarPorId(id);
+		Optional<Cidade> cidadeAux = buscarPorId(id);
 		
-		BeanUtils.copyProperties(cidade, cidadeAux, "id");
+		BeanUtils.copyProperties(cidade, cidadeAux.get(), "id");
 		
-		return repository.incluir(cidadeAux);
+		return repository.save(cidadeAux.get());
 	}
 	
 	public void delete(Long id) {
 	try {
-		 repository.remover(id);
+		 repository.deleteById(id);
 	} catch (EmptyResultDataAccessException ex) {
 		throw new EntidadeNaoEncontradaException(
 				String.format("nao existe um cadastro de estado com codigo %d ", id));

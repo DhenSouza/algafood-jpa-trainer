@@ -23,7 +23,7 @@ public class RestauranteInclusao {
 		restaurante.setNome("Lubaco");
 		restaurante.setTaxaFrete(big);
 		
-		restauranteRepository.adicionar(restaurante);
+		restauranteRepository.save(restaurante);
 		
 		
 	}

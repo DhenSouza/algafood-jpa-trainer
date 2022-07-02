@@ -1,6 +1,7 @@
 package com.algaworks.algafood.api.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ public class CozinhaController {
 	}
 
 	@GetMapping(path = "/buscar/{id}")
-	public ResponseEntity<Cozinha> buscarPorId(@PathVariable Long id) {
+	public ResponseEntity<Cozinha> buscarPorId(@PathVariable Long id) throws Exception {
 		Cozinha cozinha = cozinhaService.buscaCozinhaId(id);
 
 		if (cozinha != null) {

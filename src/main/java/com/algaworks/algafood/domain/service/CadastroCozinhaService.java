@@ -1,6 +1,7 @@
 package com.algaworks.algafood.domain.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,36 +21,46 @@ public class CadastroCozinhaService {
 	private CozinhaRepository repository;
 
 	public Cozinha salvar(Cozinha cozinha) {
-		return repository.adicionar(cozinha);
+		return repository.save(cozinha);
 	}
 
 	public Cozinha alterarCozinha(Long id, Cozinha cozinha) {
-		Cozinha cozinhaDif = repository.buscarPorId(id);
+		try {
+			Optional<Cozinha> cozinhaDif = repository.findById(id);
 
-		// Ele pega o objeto atual e copia e joga no Objeto alvo
-		BeanUtils.copyProperties(cozinha, cozinhaDif, "id");
+			// Ele pega o objeto atual e copia e joga no Objeto alvo
+			BeanUtils.copyProperties(cozinha, cozinhaDif.get(), "id");
 
-		return repository.adicionar(cozinhaDif);
+			return repository.save(cozinhaDif.get());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 	public List<Cozinha> listar() {
-		return repository.todos();
+		return repository.findAll();
 	}
 
 	public Cozinha buscaCozinhaId(Long id) {
-		return repository.buscarPorId(id);
+
+		Optional<Cozinha> obj = repository.findById(id);
+		//.orElseThrow(() -> new Exception("Erro ao tentar buscar Por Nome"));
+		return obj.get(); 
 	}
-	
+
 	public void deletarCozinha(Long id) {
-	try {
-		
-		repository.deletar(id);
-	} catch (EmptyResultDataAccessException ex) {
-		throw new EntidadeNaoEncontradaException(
-				String.format("nao existe um cadastro de cozinha com codigo %d ", id));
-	} catch (DataIntegrityViolationException e) {
-		throw new EntidadeEmUsoException(
-				String.format("Cozinha de código %d ao pode ser removida, pois, esta e uso", id));
-	}
+		try {
+
+			repository.deleteById(id);
+		} catch (EmptyResultDataAccessException ex) {
+			throw new EntidadeNaoEncontradaException(
+					String.format("nao existe um cadastro de cozinha com codigo %d ", id));
+		} catch (DataIntegrityViolationException e) {
+			throw new EntidadeEmUsoException(
+					String.format("Cozinha de código %d ao pode ser removida, pois, esta e uso", id));
+		}
 	}
 }

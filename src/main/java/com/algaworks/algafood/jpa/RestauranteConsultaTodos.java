@@ -20,7 +20,7 @@ public class RestauranteConsultaTodos {
 		RestauranteRepository restauranteRepository = applicationContext.getBean(RestauranteRepository.class);
 		BigDecimal big = new BigDecimal(20.54);
 		
-		List<Restaurante> restaurantes = restauranteRepository.todos();
+		List<Restaurante> restaurantes = restauranteRepository.findAll();
 		
 		restaurantes.forEach(restaurante -> System.out.println("nomes: " + restaurante.getNome() + " Frete: " + restaurante.getTaxaFrete()
 		+ " Cozinha: " + restaurante.getCozinha().getNome()));

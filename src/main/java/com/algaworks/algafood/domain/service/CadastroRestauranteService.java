@@ -1,6 +1,7 @@
 package com.algaworks.algafood.domain.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,36 +26,34 @@ public class CadastroRestauranteService {
 	private CozinhaRepository cRepository;
 
 	public List<Restaurante> listar() {
-		return repository.todos();
+		return repository.findAll();
 	}
 
 	public Restaurante buscarPorId(Long id) {
-		return repository.buscarPorId(id);
+		return repository.findById(id).get();
 	}
 
 	public Restaurante salvar(Restaurante restaurante) {
 		Long idcozinha = restaurante.getCozinha().getId();
-		Cozinha cozinha = cRepository.buscarPorId(idcozinha);
-		
-		if(cozinha == null) {
-			throw new EntidadeNaoEncontradaException(String.format("Não existe cadastro de cozinha com o codigo %d", idcozinha));
-		}
+		Cozinha cozinha = cRepository.findById(idcozinha).orElseThrow(() -> 
+		new EntidadeNaoEncontradaException(String.format("Não existe cadastro de cozinha com o codigo %d", idcozinha)));
 		
 		restaurante.setCozinha(cozinha);
-		return repository.adicionar(restaurante);
+		return repository.save(restaurante);
 	}
 
 	public Restaurante alterar(Long id, Restaurante restaurante) {
-		Restaurante aux = repository.buscarPorId(id);
+		Restaurante aux = repository.findById(id).orElseThrow(() ->
+			new EntidadeNaoEncontradaException(String.format("Não existe cadastro de cozinha com o codigo %d", restaurante.getCozinha().getId())));
 
 		BeanUtils.copyProperties(restaurante, aux, "id");
 
-		return repository.adicionar(aux);
+		return repository.save(aux);
 	}
 
 	public void deletar(Long id) {
 		try {
-			repository.deletar(id);
+			repository.deleteById(id);
 		} catch (EmptyResultDataAccessException ex) {
 			throw new EntidadeNaoEncontradaException(
 					String.format("nao existe um cadastro de restaurante com codigo %d ", id));
