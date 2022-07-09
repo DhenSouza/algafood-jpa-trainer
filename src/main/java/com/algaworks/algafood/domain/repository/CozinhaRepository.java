@@ -9,5 +9,5 @@ import com.algaworks.algafood.domain.model.Cozinha;
 
 @Repository
 public interface CozinhaRepository extends JpaRepository<Cozinha, Long> {
-	List<Cozinha> findByNomeIgnoreCase(String nome);
+	List<Cozinha> findByNomeContainingIgnoreCase(String nome);
 }

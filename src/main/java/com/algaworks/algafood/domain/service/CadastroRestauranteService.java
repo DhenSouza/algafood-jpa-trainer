@@ -1,5 +1,6 @@
 package com.algaworks.algafood.domain.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,5 +62,13 @@ public class CadastroRestauranteService {
 			throw new EntidadeEmUsoException(
 					String.format("Cozinha de código %d ao pode ser removida, pois, esta e uso", id));
 		}
+	}
+
+	public List<Restaurante> findByNomeAndIdCozinha(String nome, Long id){
+		return repository.consultaPorNome(nome, id);
+	}
+
+	public List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal){
+		return repository.find(nome, taxaFreteInicial, taxaFreteFinal);
 	}
 }

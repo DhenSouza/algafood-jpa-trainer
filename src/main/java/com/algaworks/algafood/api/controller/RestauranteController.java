@@ -1,19 +1,12 @@
 package com.algaworks.algafood.api.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
@@ -71,5 +64,23 @@ public class RestauranteController {
 
 			return ResponseEntity.notFound().build();
 		}
+	}
+	@GetMapping("/por-nome")
+	public ResponseEntity<List<Restaurante>> findByNomeAndId(@RequestParam("nome") String nome, @RequestParam("cozinhaId")Long id){
+		List<Restaurante> restaurantes = service.findByNomeAndIdCozinha(nome, id);
+		if(restaurantes.isEmpty()){
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(restaurantes);
+	}
+
+	@GetMapping("/por-nome-taxaInicial-taxaFinal")
+	public ResponseEntity<List<Restaurante>> findByNomeAndTaxaInicialAndFinal(@RequestParam("nome") String nome,
+																			  @RequestParam("taxaInicial") BigDecimal taxaInicial, @RequestParam("taxaFinal") BigDecimal taxaFinal ){
+		List<Restaurante> restaurantes = service.find(nome, taxaInicial, taxaFinal);
+		if(restaurantes.isEmpty()){
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(restaurantes);
 	}
 }

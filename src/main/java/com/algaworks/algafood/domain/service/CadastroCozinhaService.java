@@ -63,4 +63,8 @@ public class CadastroCozinhaService {
 					String.format("Cozinha de código %d ao pode ser removida, pois, esta e uso", id));
 		}
 	}
+
+	public List<Cozinha> findByName(String nome) {
+		return repository.findByNomeContainingIgnoreCase(nome);
+	}
 }
