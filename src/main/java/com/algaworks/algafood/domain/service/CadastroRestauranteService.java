@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import com.algaworks.algafood.infrastructure.repository.RestauranteRepositoryImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -23,6 +24,9 @@ public class CadastroRestauranteService {
 
 	@Autowired
 	private RestauranteRepository repository;
+
+	@Autowired
+	private RestauranteRepositoryImpl restauranteImpl;
 	
 	@Autowired
 	private CozinhaRepository cRepository;
@@ -31,8 +35,8 @@ public class CadastroRestauranteService {
 		return repository.findAll();
 	}
 
-	/* Metodo para a listagem dos restaurantes espeficicando*/
-	public List<Restaurante> listarComEspecificação(Specification objeto){ return repository.findAll(objeto); }
+	/* Metodo para a listagem dos restaurantes espeficicando utilizando o nome*/
+	public List<Restaurante> listarComEspecificação(String nomeRestaurante){ return restauranteImpl.findComFreteGratis(nomeRestaurante); }
 
 	public Restaurante buscarPorId(Long id) {
 		return repository.findById(id).get();
