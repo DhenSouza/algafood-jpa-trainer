@@ -3,6 +3,8 @@ package com.algaworks.algafood.api.controller;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.algaworks.algafood.infrastructure.repository.spec.RestauranteComFreteGratisSpec;
+import com.algaworks.algafood.infrastructure.repository.spec.RestauranteComNomeIgualSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -81,6 +83,19 @@ public class RestauranteController {
 		if(restaurantes.isEmpty()){
 			return ResponseEntity.notFound().build();
 		}
+		return ResponseEntity.ok(restaurantes);
+	}
+
+	@GetMapping("/com-frete-gratis")
+	public ResponseEntity<List<Restaurante>> restauranteComFreteGratis(String nome){
+		var comFreteGratis = new RestauranteComFreteGratisSpec();
+		var comNomeIgual = new RestauranteComNomeIgualSpec(nome);
+		List<Restaurante> restaurantes = service.listarComEspecificação(comFreteGratis.and(comNomeIgual));
+
+		if(restaurantes.isEmpty()){
+			return ResponseEntity.notFound().build();
+		}
+
 		return ResponseEntity.ok(restaurantes);
 	}
 }

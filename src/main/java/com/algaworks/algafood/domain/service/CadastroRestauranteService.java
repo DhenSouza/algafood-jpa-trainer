@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
@@ -29,6 +30,9 @@ public class CadastroRestauranteService {
 	public List<Restaurante> listar() {
 		return repository.findAll();
 	}
+
+	/* Metodo para a listagem dos restaurantes espeficicando*/
+	public List<Restaurante> listarComEspecificação(Specification objeto){ return repository.findAll(objeto); }
 
 	public Restaurante buscarPorId(Long id) {
 		return repository.findById(id).get();
