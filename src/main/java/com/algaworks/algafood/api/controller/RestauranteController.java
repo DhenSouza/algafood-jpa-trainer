@@ -88,7 +88,7 @@ public class RestauranteController {
 	@GetMapping("/com-frete-gratis")
 	public ResponseEntity<List<Restaurante>> restauranteComFreteGratis(String nome){
 
-		List<Restaurante> restaurantes = service.listarComEspecificação(RestauranteSpecs.comFreteGratis().and(RestauranteSpecs.comNomeIgual(nome)));
+		List<Restaurante> restaurantes = service.listarComEspecificação(nome);
 
 		if(restaurantes.isEmpty()){
 			return ResponseEntity.notFound().build();
