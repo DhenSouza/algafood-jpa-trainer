@@ -2,6 +2,7 @@ package com.algaworks.algafood.api.controller;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import com.algaworks.algafood.infrastructure.repository.spec.RestauranteSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,5 +96,9 @@ public class RestauranteController {
 		}
 
 		return ResponseEntity.ok(restaurantes);
+	}
+	@GetMapping("/primeiro")
+	public ResponseEntity<Optional<Restaurante>> buscarPrimeiroRestauranteLista(){
+		return ResponseEntity.ok(service.buscarOPrimeiroRestaurante());
 	}
 }

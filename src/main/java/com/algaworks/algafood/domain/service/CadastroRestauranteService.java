@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import com.algaworks.algafood.infrastructure.repository.CustomJpaRepositoryImpl;
 import com.algaworks.algafood.infrastructure.repository.RestauranteRepositoryImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,5 +79,9 @@ public class CadastroRestauranteService {
 
 	public List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal){
 		return repository.find(nome, taxaFreteInicial, taxaFreteFinal);
+	}
+
+	public Optional<Restaurante> buscarOPrimeiroRestaurante(){
+		return repository.buscarPrimeiro();
 	}
 }
