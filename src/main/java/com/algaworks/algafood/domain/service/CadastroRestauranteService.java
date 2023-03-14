@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import com.algaworks.algafood.infrastructure.repository.CustomJpaRepositoryImpl;
+import com.algaworks.algafood.infrastructure.repository.RestauranteRepositoryImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -23,6 +25,9 @@ public class CadastroRestauranteService {
 
 	@Autowired
 	private RestauranteRepository repository;
+
+	@Autowired
+	private RestauranteRepositoryImpl restauranteImpl;
 	
 	@Autowired
 	private CozinhaRepository cRepository;
@@ -31,8 +36,8 @@ public class CadastroRestauranteService {
 		return repository.findAll();
 	}
 
-	/* Metodo para a listagem dos restaurantes espeficicando*/
-	public List<Restaurante> listarComEspecificação(Specification objeto){ return repository.findAll(objeto); }
+	/* Metodo para a listagem dos restaurantes espeficicando utilizando o nome*/
+	public List<Restaurante> listarComEspecificação(String nomeRestaurante){ return restauranteImpl.findComFreteGratis(nomeRestaurante); }
 
 	public Restaurante buscarPorId(Long id) {
 		return repository.findById(id).get();
@@ -51,7 +56,7 @@ public class CadastroRestauranteService {
 		Restaurante aux = repository.findById(id).orElseThrow(() ->
 			new EntidadeNaoEncontradaException(String.format("Não existe cadastro de cozinha com o codigo %d", restaurante.getCozinha().getId())));
 
-		BeanUtils.copyProperties(restaurante, aux, "id");
+		BeanUtils.copyProperties(restaurante, aux, "id", "formasPagamento");
 
 		return repository.save(aux);
 	}
@@ -74,5 +79,9 @@ public class CadastroRestauranteService {
 
 	public List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal){
 		return repository.find(nome, taxaFreteInicial, taxaFreteFinal);
+	}
+
+	public Optional<Restaurante> buscarOPrimeiroRestaurante(){
+		return repository.buscarPrimeiro();
 	}
 }
