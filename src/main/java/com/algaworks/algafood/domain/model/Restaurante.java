@@ -1,6 +1,7 @@
 package com.algaworks.algafood.domain.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,11 +38,11 @@ public class Restaurante {
 	private Endereco endereco;
 /* Codigo esta comentado pois, por conta de nao estar intalado o BD na maquina da erro ao criar as datas*/
 	@CreationTimestamp
-	@Column(name = "data_cadastro", nullable = true, columnDefinition = "datetime")
+	@Column(name = "data_cadastro", columnDefinition = "datetime")
 	private LocalDateTime dataCadastro;
 
 	@UpdateTimestamp
-	@Column(name = "data_atualizacao", nullable = true, columnDefinition = "datetime")
+	@Column(name = "data_atualizacao", columnDefinition = "datetime")
 	private LocalDateTime dataAtualizacao;
 
 	@JsonIgnore
@@ -50,5 +51,9 @@ public class Restaurante {
 			joinColumns = @JoinColumn(name="restaurante_id"),
 			inverseJoinColumns = @JoinColumn(name="forma_pagamento_id"))
 	private List<FormaPagamento> formasPagamento = new ArrayList<>();
+
+	@JsonIgnore
+	@OneToMany(mappedBy = "restaurante")
+	private List<Produto> produtos = new ArrayList<>();
 
 }
