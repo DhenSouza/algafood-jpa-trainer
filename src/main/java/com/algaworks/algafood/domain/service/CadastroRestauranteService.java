@@ -53,12 +53,12 @@ public class CadastroRestauranteService {
 	}
 
 	public Restaurante alterar(Long id, Restaurante restaurante) {
-		Restaurante aux = repository.findById(id).orElseThrow(() ->
+		Restaurante dadosRestaurante = repository.findById(id).orElseThrow(() ->
 			new EntidadeNaoEncontradaException(String.format("Não existe cadastro de cozinha com o codigo %d", restaurante.getCozinha().getId())));
 
-		BeanUtils.copyProperties(restaurante, aux, "id", "formasPagamento");
+		BeanUtils.copyProperties(restaurante, dadosRestaurante, "id", "formasPagamento", "endereco", "dataCadastro");
 
-		return repository.save(aux);
+		return repository.save(dadosRestaurante);
 	}
 
 	public void deletar(Long id) {

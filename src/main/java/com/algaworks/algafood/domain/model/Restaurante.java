@@ -1,6 +1,7 @@
 package com.algaworks.algafood.domain.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,8 @@ import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -29,8 +32,17 @@ public class Restaurante {
 	@JoinColumn(name = "cozinha_id", nullable = false)
 	private Cozinha cozinha;
 
+	@JsonIgnore
 	@Embedded
 	private Endereco endereco;
+/* Codigo esta comentado pois, por conta de nao estar intalado o BD na maquina da erro ao criar as datas*/
+	@CreationTimestamp
+	@Column(name = "data_cadastro", nullable = true, columnDefinition = "datetime")
+	private LocalDateTime dataCadastro;
+
+	@UpdateTimestamp
+	@Column(name = "data_atualizacao", nullable = true, columnDefinition = "datetime")
+	private LocalDateTime dataAtualizacao;
 
 	@JsonIgnore
 	@ManyToMany
