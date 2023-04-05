@@ -42,11 +42,11 @@ public class Restaurante {
 	private Endereco endereco;
 /* Codigo esta comentado pois, por conta de nao estar intalado o BD na maquina da erro ao criar as datas*/
 	@CreationTimestamp
-	@Column(name = "data_cadastro", columnDefinition = "datetime")
+	@Column(name = "data_cadastro", nullable = false , columnDefinition = "datetime")
 	private LocalDateTime dataCadastro;
 
 	@UpdateTimestamp
-	@Column(name = "data_atualizacao", columnDefinition = "datetime")
+	@Column(name = "data_atualizacao", nullable = false,  columnDefinition = "datetime")
 	private LocalDateTime dataAtualizacao;
 
 	/* Solução para usar formasPagamento sem problema n+1 aula 6.14 AW */
