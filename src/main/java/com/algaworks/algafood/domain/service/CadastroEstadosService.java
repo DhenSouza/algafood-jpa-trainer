@@ -17,6 +17,8 @@ import com.algaworks.algafood.domain.repository.EstadoRepository;
 @Service
 public class CadastroEstadosService {
 
+	public static final String ESTADO_NAO_ENCONTRADO = "Não existe um cadastro de estado com código %d";
+	public static final String ESTADO_EM_USO = "Estado de código %d não pode ser removido, pois está em uso";
 	@Autowired
 	private EstadoRepository repository;
 
@@ -24,39 +26,31 @@ public class CadastroEstadosService {
 		return repository.findAll();
 	}
 
-	public Optional<Estado> buscarPorId(Long id) {
-		return repository.findById(id);
+	public Estado buscarPorId(Long id) {
+		return repository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format(ESTADO_NAO_ENCONTRADO, id)));
 	}
 
 	public Estado salvar(Estado estado) {
-		Long idEstado = estado.getId();
-		Estado estadoAux = repository.save(estado);
-
-		if (estadoAux == null) {
-			throw new EntidadeNaoEncontradaException(
-					String.format("Não existe cadastro de estado com o codigo %d", idEstado));
-		}
-
-		return repository.save(estadoAux);
+		return repository.save(estado);
 	}
 	
 	public Estado alterar(Estado estado, Long id) {
-		Optional<Estado> estadoAux = buscarPorId(id);
+		Estado estadoAux = this.buscarPorId(id);
 		
-		BeanUtils.copyProperties(estado, estadoAux.get(), "id");
+		BeanUtils.copyProperties(estado, estadoAux, "id");
 		
-		return repository.save(estadoAux.get());
+		return repository.save(estadoAux);
 	}
 	
 	public void delete(Long id) {
-	try {
-		 repository.deleteById(id);
-	} catch (EmptyResultDataAccessException ex) {
-		throw new EntidadeNaoEncontradaException(
-				String.format("nao existe um cadastro de estado com codigo %d ", id));
-	} catch (DataIntegrityViolationException e) {
-		throw new EntidadeEmUsoException(
-				String.format("Estado de código %d ao pode ser removida, pois, esta e uso", id));
-	}
+		try {
+			repository.deleteById(id);
+		} catch (EmptyResultDataAccessException e) {
+			throw new EntidadeNaoEncontradaException(
+					String.format(ESTADO_NAO_ENCONTRADO, id));
+		} catch (DataIntegrityViolationException e) {
+			throw new EntidadeEmUsoException(
+					String.format(ESTADO_EM_USO, id));
+		}
 	}
 }
