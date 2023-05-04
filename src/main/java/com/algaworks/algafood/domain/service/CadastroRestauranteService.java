@@ -23,6 +23,8 @@ import com.algaworks.algafood.domain.repository.RestauranteRepository;
 @Service
 public class CadastroRestauranteService {
 
+	public static final String RESTAURANTE_SEM_CADASTRO = "nao existe um cadastro de restaurante com codigo %d ";
+	public static final String COZINHA_EM_USO = "Cozinha de código %d ao pode ser removida, pois, esta e uso";
 	@Autowired
 	private RestauranteRepository repository;
 
@@ -32,6 +34,9 @@ public class CadastroRestauranteService {
 	@Autowired
 	private CozinhaRepository cRepository;
 
+	@Autowired
+	private CadastroCozinhaService cozinhaService;
+
 	public List<Restaurante> listar() {
 		return repository.findAll();
 	}
@@ -40,21 +45,19 @@ public class CadastroRestauranteService {
 	public List<Restaurante> listarComEspecificação(String nomeRestaurante){ return restauranteImpl.findComFreteGratis(nomeRestaurante); }
 
 	public Restaurante buscarPorId(Long id) {
-		return repository.findById(id).get();
+		return repository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format(RESTAURANTE_SEM_CADASTRO, id)));
 	}
 
 	public Restaurante salvar(Restaurante restaurante) {
-		Long idcozinha = restaurante.getCozinha().getId();
-		Cozinha cozinha = cRepository.findById(idcozinha).orElseThrow(() -> 
-		new EntidadeNaoEncontradaException(String.format("Não existe cadastro de cozinha com o codigo %d", idcozinha)));
-		
+		Long idCozinha = restaurante.getCozinha().getId();
+		Cozinha cozinha = cozinhaService.buscarCozinhaPorId(idCozinha);
+
 		restaurante.setCozinha(cozinha);
 		return repository.save(restaurante);
 	}
 
 	public Restaurante alterar(Long id, Restaurante restaurante) {
-		Restaurante dadosRestaurante = repository.findById(id).orElseThrow(() ->
-			new EntidadeNaoEncontradaException(String.format("Não existe cadastro de cozinha com o codigo %d", restaurante.getCozinha().getId())));
+		Restaurante dadosRestaurante = this.buscarPorId(id);
 
 		BeanUtils.copyProperties(restaurante, dadosRestaurante, "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
 
@@ -66,10 +69,10 @@ public class CadastroRestauranteService {
 			repository.deleteById(id);
 		} catch (EmptyResultDataAccessException ex) {
 			throw new EntidadeNaoEncontradaException(
-					String.format("nao existe um cadastro de restaurante com codigo %d ", id));
+					String.format(RESTAURANTE_SEM_CADASTRO, id));
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
-					String.format("Cozinha de código %d ao pode ser removida, pois, esta e uso", id));
+					String.format(COZINHA_EM_USO, id));
 		}
 	}
 
