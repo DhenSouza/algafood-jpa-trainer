@@ -18,6 +18,8 @@ import com.algaworks.algafood.domain.repository.EstadoRepository;
 @Service
 public class CadastroCidadesService {
 
+	public static final String CADASTRO_CIDADE_NAO_ENCONTRADO = "nao existe um cadastro de estado com codigo %d ";
+	public static final String ESTADO_EM_USO = "Estado de código %d ao pode ser removida, pois, esta e uso";
 	@Autowired
 	private CidadeRepository repository;
 
@@ -50,14 +52,14 @@ public class CadastroCidadesService {
 	}
 	
 	public void delete(Long id) {
-	try {
+		try{
 		 repository.deleteById(id);
-	} catch (EmptyResultDataAccessException ex) {
-		throw new EntidadeNaoEncontradaException(
-				String.format("nao existe um cadastro de estado com codigo %d ", id));
-	} catch (DataIntegrityViolationException e) {
-		throw new EntidadeEmUsoException(
-				String.format("Estado de código %d ao pode ser removida, pois, esta e uso", id));
-	}
+		} catch (EmptyResultDataAccessException e) {
+			throw new EntidadeNaoEncontradaException(
+				String.format(CADASTRO_CIDADE_NAO_ENCONTRADO, id));
+		} catch (DataIntegrityViolationException e) {
+			throw new EntidadeEmUsoException(
+					String.format(ESTADO_EM_USO, id));
+		}
 	}
 }
