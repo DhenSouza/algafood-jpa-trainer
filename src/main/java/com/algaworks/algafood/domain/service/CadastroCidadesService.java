@@ -27,8 +27,8 @@ public class CadastroCidadesService {
 		return repository.findAll();
 	}
 
-	public Optional<Cidade> buscarPorId(Long id) {
-		return repository.findById(id);
+	public Cidade buscarPorId(Long id) {
+		return repository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format(CADASTRO_CIDADE_NAO_ENCONTRADO, id)));
 	}
 
 	public Cidade salvar(Cidade cidade) {
@@ -44,11 +44,11 @@ public class CadastroCidadesService {
 	}
 	
 	public Cidade alterar(Cidade cidade, Long id) {
-		Optional<Cidade> cidadeAux = buscarPorId(id);
+		Cidade cidadeAux = this.buscarPorId(id);
 		
-		BeanUtils.copyProperties(cidade, cidadeAux.get(), "id");
+		BeanUtils.copyProperties(cidade, cidadeAux, "id");
 		
-		return repository.save(cidadeAux.get());
+		return repository.save(cidadeAux);
 	}
 	
 	public void delete(Long id) {

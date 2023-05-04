@@ -26,12 +26,8 @@ public class CidadeController {
 	}
 
 	@GetMapping(path = "/{id}")
-	public ResponseEntity<Cidade> buscarPorId(@PathVariable Long id) {
-		Optional<Cidade> cidade = service.buscarPorId(id);
-		if (cidade.isEmpty()) {
-			return ResponseEntity.notFound().build();
-		}
-		return ResponseEntity.ok(service.buscarPorId(id).get());
+	public Cidade buscarPorId(@PathVariable Long id) {
+		return service.buscarPorId(id);
 	}
 
 	@PostMapping
@@ -40,11 +36,8 @@ public class CidadeController {
 	}
 
 	@PutMapping("{id}")
-	public ResponseEntity<Cidade> alterar(@RequestBody Cidade cidade, @PathVariable Long id) {
-		if (cidade == null) {
-			return ResponseEntity.notFound().build();
-		}
-		return ResponseEntity.status(HttpStatus.OK).body(service.alterar(cidade, id));
+	public Cidade alterar(@RequestBody Cidade cidade, @PathVariable Long id) {
+		return service.alterar(cidade, id);
 	}
 
 	@DeleteMapping("{id}")
