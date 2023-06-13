@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.controller;
 import java.util.List;
 import java.util.Optional;
 
+import com.algaworks.algafood.domain.exception.NegocioException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,18 +33,26 @@ public class CidadeController {
 
 	@PostMapping
 	public ResponseEntity<Cidade> incluir(@RequestBody Cidade cidade) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(cidade));
-	}
+			try {
+				return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(cidade));
+			}catch (EntidadeNaoEncontradaException e){
+				throw new NegocioException(e.getMessage());
+			}
+		}
 
-	@PutMapping("{id}")
-	public Cidade alterar(@RequestBody Cidade cidade, @PathVariable Long id) {
-		return service.alterar(cidade, id);
-	}
+		@PutMapping("{id}")
+		public Cidade alterar(@RequestBody Cidade cidade, @PathVariable Long id) {
+			try {
+				return service.alterar(cidade, id);
+			}catch (EntidadeNaoEncontradaException e) {
+				throw new NegocioException(e.getMessage());
+			}
+		}
 
-	@DeleteMapping("{id}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deletar(@PathVariable Long id) {
-		service.delete(id);
-	}
+		@DeleteMapping("{id}")
+		@ResponseStatus(HttpStatus.NO_CONTENT)
+		public void deletar(@PathVariable Long id) {
+			service.delete(id);
+		}
 
 }
