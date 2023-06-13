@@ -48,7 +48,7 @@ public class CadastroCidadesService {
  		Cidade cidadeAux = this.buscarPorId(id);
 		Estado estado = cidade.getEstado();
 
-		 if(cidade.getEstado().getId() != null){
+		 if(estado.getId() != null){
 			 estado = this.cadastroEstado.buscarPorId(cidade.getEstado().getId());
 
 			 if(estado != null){

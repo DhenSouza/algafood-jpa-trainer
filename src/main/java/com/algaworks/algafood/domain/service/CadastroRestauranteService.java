@@ -30,7 +30,7 @@ public class CadastroRestauranteService {
 
 	@Autowired
 	private RestauranteRepositoryImpl restauranteImpl;
-	
+
 	@Autowired
 	private CozinhaRepository cRepository;
 
@@ -58,6 +58,15 @@ public class CadastroRestauranteService {
 
 	public Restaurante alterar(Long id, Restaurante restaurante) {
 		Restaurante dadosRestaurante = this.buscarPorId(id);
+		Cozinha cozinha = restaurante.getCozinha();
+
+		if(cozinha.getId() != null){
+			cozinha = this.cozinhaService.buscarCozinhaPorId(restaurante.getCozinha().getId());
+
+			if(cozinha != null){
+				restaurante.setCozinha(cozinha);
+			}
+		}
 
 		BeanUtils.copyProperties(restaurante, dadosRestaurante, "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
 
