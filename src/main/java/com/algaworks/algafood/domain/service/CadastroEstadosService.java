@@ -1,18 +1,16 @@
 package com.algaworks.algafood.domain.service;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
+import com.algaworks.algafood.domain.exception.EstadoNaoEncontradaException;
+import com.algaworks.algafood.domain.model.Estado;
+import com.algaworks.algafood.domain.repository.EstadoRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
-import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
-import com.algaworks.algafood.domain.model.Estado;
-import com.algaworks.algafood.domain.repository.EstadoRepository;
+import java.util.List;
 
 @Service
 public class CadastroEstadosService {
@@ -27,7 +25,7 @@ public class CadastroEstadosService {
 	}
 
 	public Estado buscarPorId(Long id) {
-		return repository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format(ESTADO_NAO_ENCONTRADO, id)));
+		return repository.findById(id).orElseThrow(() -> new EstadoNaoEncontradaException(String.format(ESTADO_NAO_ENCONTRADO, id)));
 	}
 
 	public Estado salvar(Estado estado) {
@@ -46,7 +44,7 @@ public class CadastroEstadosService {
 		try {
 			repository.deleteById(id);
 		} catch (EmptyResultDataAccessException e) {
-			throw new EntidadeNaoEncontradaException(
+			throw new EstadoNaoEncontradaException(
 					String.format(ESTADO_NAO_ENCONTRADO, id));
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
