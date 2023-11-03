@@ -1,5 +1,8 @@
 package com.algaworks.algafood.api.controller;
 
+import com.algaworks.algafood.api.exceptionhandler.Problema;
+import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
+import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cidade;
@@ -9,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -47,9 +51,12 @@ public class CidadeController {
 		}
 
 		@DeleteMapping("{id}")
-		@ResponseStatus(HttpStatus.NO_CONTENT)
 		public void deletarCidade(@PathVariable Long id) {
-			service.delete(id);
+			try{
+				service.delete(id);
+			} catch (EntidadeEmUsoException e){
+				throw new NegocioException(e.getMessage(), e);
+			}
 		}
 
 }
