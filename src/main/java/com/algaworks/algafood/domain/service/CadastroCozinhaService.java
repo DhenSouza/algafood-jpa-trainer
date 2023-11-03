@@ -1,21 +1,23 @@
 package com.algaworks.algafood.domain.service;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
+import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
+import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
+import com.algaworks.algafood.domain.model.Cozinha;
+import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
-import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
-import com.algaworks.algafood.domain.model.Cozinha;
-import com.algaworks.algafood.domain.repository.CozinhaRepository;
+import java.util.List;
 
 @Service
 public class CadastroCozinhaService {
+
+	private static final String MSG_COZINHA_EM_USO
+			= "Cozinha de código %d não pode ser removida, pois está em uso";
 
 	@Autowired
 	private CozinhaRepository repository;
@@ -25,42 +27,32 @@ public class CadastroCozinhaService {
 	}
 
 	public Cozinha alterarCozinha(Long id, Cozinha cozinha) {
-		try {
-			Optional<Cozinha> cozinhaDif = repository.findById(id);
+			Cozinha cozinhaAtual = this.buscarCozinhaPorId(id);
 
 			// Ele pega o objeto atual e copia e joga no Objeto alvo
-			BeanUtils.copyProperties(cozinha, cozinhaDif.get(), "id");
+			BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
 
-			return repository.save(cozinhaDif.get());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return null;
+			return repository.save(cozinhaAtual);
 	}
 
 	public List<Cozinha> listar() {
 		return repository.findAll();
 	}
 
-	public Cozinha buscaCozinhaId(Long id) {
-
-		Optional<Cozinha> obj = repository.findById(id);
-		//.orElseThrow(() -> new Exception("Erro ao tentar buscar Por Nome"));
-		return obj.get(); 
+	public Cozinha buscarCozinhaPorId(Long cozinhaId) {
+		return repository.findById(cozinhaId)
+				.orElseThrow(() -> new CozinhaNaoEncontradaException(cozinhaId));
 	}
 
 	public void deletarCozinha(Long id) {
 		try {
 
 			repository.deleteById(id);
-		} catch (EmptyResultDataAccessException ex) {
-			throw new EntidadeNaoEncontradaException(
-					String.format("nao existe um cadastro de cozinha com codigo %d ", id));
+		} catch (EmptyResultDataAccessException e) {
+			throw new CozinhaNaoEncontradaException(id);
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
-					String.format("Cozinha de código %d ao pode ser removida, pois, esta e uso", id));
+					String.format(MSG_COZINHA_EM_USO, id));
 		}
 	}
 
