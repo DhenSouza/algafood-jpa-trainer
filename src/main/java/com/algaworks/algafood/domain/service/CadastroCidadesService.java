@@ -22,7 +22,7 @@ public class CadastroCidadesService {
 	private CidadeRepository repository;
 
 	@Autowired
-	private CadastroEstadosService cadastroEstado;
+	private CadastroEstadoService cadastroEstado;
 
 	public List<Cidade> listar() {
 		return repository.findAll();

@@ -1,18 +1,15 @@
 package com.algaworks.algafood.api.controller;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.algaworks.algafood.domain.exception.EstadoNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import com.algaworks.algafood.domain.model.Cidade;
+import com.algaworks.algafood.domain.service.CadastroCidadesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
-import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
-import com.algaworks.algafood.domain.model.Cidade;
-import com.algaworks.algafood.domain.service.CadastroCidadesService;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/cidades")
@@ -22,7 +19,7 @@ public class CidadeController {
 	private CadastroCidadesService service;
 
 	@GetMapping(path = "/listar")
-	public ResponseEntity<List<Cidade>> listar() {
+	public ResponseEntity<List<Cidade>> listarCidades() {
 		return ResponseEntity.ok(service.listar());
 	}
 
@@ -32,26 +29,26 @@ public class CidadeController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Cidade> incluir(@RequestBody Cidade cidade) {
+	public ResponseEntity<Cidade> adicionarCidade(@RequestBody Cidade cidade) {
 			try {
 				return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(cidade));
-			}catch (EntidadeNaoEncontradaException e){
-				throw new NegocioException(e.getMessage());
+			}catch (EstadoNaoEncontradaException e){
+				throw new NegocioException(e.getMessage(), e);
 			}
 		}
 
 		@PutMapping("{id}")
-		public Cidade alterar(@RequestBody Cidade cidade, @PathVariable Long id) {
+		public Cidade alterarCidade(@RequestBody Cidade cidade, @PathVariable Long id) {
 			try {
 				return service.alterar(cidade, id);
-			}catch (EntidadeNaoEncontradaException e) {
-				throw new NegocioException(e.getMessage());
+			}catch (EstadoNaoEncontradaException e) {
+				throw new NegocioException(e.getMessage(), e);
 			}
 		}
 
 		@DeleteMapping("{id}")
 		@ResponseStatus(HttpStatus.NO_CONTENT)
-		public void deletar(@PathVariable Long id) {
+		public void deletarCidade(@PathVariable Long id) {
 			service.delete(id);
 		}
 

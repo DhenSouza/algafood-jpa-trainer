@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.infrastructure.repository.CustomJpaRepositoryImpl;
 import com.algaworks.algafood.infrastructure.repository.RestauranteRepositoryImpl;
 import org.springframework.beans.BeanUtils;
@@ -22,8 +23,6 @@ import com.algaworks.algafood.domain.repository.RestauranteRepository;
 
 @Service
 public class CadastroRestauranteService {
-
-	public static final String RESTAURANTE_SEM_CADASTRO = "nao existe um cadastro de restaurante com codigo %d ";
 	public static final String COZINHA_EM_USO = "Cozinha de código %d ao pode ser removida, pois, esta e uso";
 	@Autowired
 	private RestauranteRepository repository;
@@ -45,7 +44,7 @@ public class CadastroRestauranteService {
 	public List<Restaurante> listarComEspecificação(String nomeRestaurante){ return restauranteImpl.findComFreteGratis(nomeRestaurante); }
 
 	public Restaurante buscarPorId(Long id) {
-		return repository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format(RESTAURANTE_SEM_CADASTRO, id)));
+		return repository.findById(id).orElseThrow(() -> new RestauranteNaoEncontradoException(id));
 	}
 
 	public Restaurante salvar(Restaurante restaurante) {
@@ -77,8 +76,7 @@ public class CadastroRestauranteService {
 		try {
 			repository.deleteById(id);
 		} catch (EmptyResultDataAccessException ex) {
-			throw new EntidadeNaoEncontradaException(
-					String.format(RESTAURANTE_SEM_CADASTRO, id));
+			throw new RestauranteNaoEncontradoException(id);
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
 					String.format(COZINHA_EM_USO, id));
