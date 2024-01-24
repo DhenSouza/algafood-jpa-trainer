@@ -17,34 +17,26 @@ import java.time.LocalDateTime;
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
-    public ResponseEntity<?> tratarEntidadeNaoEncontradaExeption(EntidadeNaoEncontradaException e){
-
-        Problema problema = Problema.builder()
-                .dataHora(LocalDateTime.now())
-                .mensagem(e.getMessage()).build();
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problema);
+    public ResponseEntity<?> tratarEntidadeNaoEncontradaExeption(EntidadeNaoEncontradaException e, WebRequest request){
+        return handleExceptionInternal(e, e.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
     @ExceptionHandler(NegocioException.class)
-    public ResponseEntity<?> tratarNegocioException(NegocioException e){
-        Problema problema = Problema.builder()
-                .dataHora(LocalDateTime.now())
-                .mensagem(e.getMessage()).build();
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problema);
+    public ResponseEntity<?> tratarNegocioException(NegocioException e, WebRequest request){
+        return handleExceptionInternal(e, e.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 @ExceptionHandler(EntidadeEmUsoException.class)
-    public ResponseEntity<?> tratarEntidadeEmUsoException(EntidadeEmUsoException e){
-        Problema problema = Problema.builder()
-                .dataHora(LocalDateTime.now())
-                .mensagem("Entidade Nao pode ser removida, pois esta em uso")
-                .build();
-
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(problema);
+    public ResponseEntity<?> tratarEntidadeEmUsoException(EntidadeEmUsoException e, WebRequest request){
+    return handleExceptionInternal(e, e.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
 
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        if (body == null){
+            body = Problema.builder().dataHora(LocalDateTime.now()).mensagem(status.getReasonPhrase()).build();
+        } else if(body instanceof String) {
+            body = Problema.builder().dataHora(LocalDateTime.now()).mensagem((String) body).build();
+        }
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 }
